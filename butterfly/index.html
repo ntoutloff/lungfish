@@ -201,12 +201,12 @@
         });
 
         addEventListener('deviceorientation', function (event) {
-            butterfly.ay = event.beta/10;
+            butterfly.ay = -event.beta/10;
             document.getElementById('beta').innerHTML = event.beta;
             butterfly.ax = event.gamma/10;
             document.getElementById('gamma').innerHTML = event.gamma;
         });
-        console.log('deviceorientation set')
+        console.log('y is -beta, x is +gamma')
         function updateCanvas() {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             ctx.fillRect(50, 50, 50, 50);
