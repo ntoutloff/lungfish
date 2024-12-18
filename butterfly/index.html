@@ -199,10 +199,11 @@
             if (event.key == 'a') { tankfly.d_rot = 0 }
         });
 
-        addEventListener('devicemotion', function (event) {
-            butterfly.ax = event.rotationRate.alpha;
-            butterfly.ay = event.rotationRate.beta;
+        addEventListener('deviceorientation', function (event) {
+            butterfly.ax = event.beta/180;
+            butterfly.ay = event.gamma/90;
         });
+        console.log('deviceorientation set')
         function updateCanvas() {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             ctx.fillRect(50, 50, 50, 50);
