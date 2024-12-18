@@ -201,9 +201,9 @@
         });
 
         addEventListener('deviceorientation', function (event) {
-            butterfly.ax = event.beta/180;
+            butterfly.ay = event.beta/10;
             document.getElementById('beta').innerHTML = event.beta;
-            butterfly.ay = event.gamma/90;
+            butterfly.ax = event.gamma/10;
             document.getElementById('gamma').innerHTML = event.gamma;
         });
         console.log('deviceorientation set')
