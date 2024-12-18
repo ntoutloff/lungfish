@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Butterfly Game</title>
+    <style>
+        canvas {
+            border: 2px solid black;
+            background-color: cadetblue;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="user_text">Hello</h1>
+    <script>
+        let frame = 0;
+        
+        // Canvas setup (was 600x400 originaly)
+        const canvasWidth = 600;
+        const canvasHeight = 400;
+        const gameCanvas = {
+            canvas: document.createElement("canvas"),
+            start: function () {
+                this.canvas.width = canvasWidth;
+                this.canvas.height = canvasHeight;
+                this.context = this.canvas.getContext("2d");
+                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+            }
+        }
+        gameCanvas.start();
+        const ctx = gameCanvas.context;
+        setInterval(updateCanvas, 30);
+        const butterfly_frames = [
+            'butterfly1.png',
+            'butterfly2.png',
+            'butterfly3.png',
+            'butterfly4.png',
+            'butterfly3.png',
+            'butterfly2.png',
+        ];
+        // Gamepad stuff
+        let gamepadConnected = false;
+        window.addEventListener("gamepadconnected", (event) => {
+            const gamepad = event.gamepad;
+            console.log("Gamepad connected:");
+            console.log("  Id:", gamepad.id);
+            console.log("  Index:", gamepad.index);
+            console.log("  Buttons:", gamepad.buttons.length);
+            console.log("  Axes:", gamepad.axes.length);
+            gamepadConnected = true;
+        });
+        function controller() {
+            const controller = navigator.getGamepads()[0];
+            if (gamepadConnected == true) {
+                //console.log(navigator.getGamepads());
+                let axes = controller.axes;
+                let buttons = controller.buttons;
+                butterfly.ax = Math.round(axes[0]);
+                butterfly.ay = Math.round(axes[1]);
+                //document.getElementById("user_text").innerHTML = axes[0];
+            }
+        }
+        tflyImg = new Image();
+        tflyImg.src = 'butterfly1.png'
+        tankfly = {
+            x: 100,
+            y: 100,
+            vx: 0,
+            vy: 0,
+            speed: 0,
+            acc: 0,
+            angle: 0,
+            d_rot: 0,
+            img: new Image(),
+            move: function () {
+                // sin rot = vx/speed --> vx = sin rot * speed
+                //console.log(this.vx, this.vy);
+                this.speed += this.acc;
+                if (this.speed < 0) { this.speed = 0 }
+                this.vx = Math.sin(this.angle) * this.speed;
+                this.vy = Math.cos(this.angle) * this.speed;
+                if (this.speed != 0) { this.last_rot = this.rot }
+                this.x += this.vx;
+                this.y += this.vy;
+                this.angle += this.d_rot;
+            },
+            draw: function () {
+                this.w = tflyImg.width;
+                this.h = tflyImg.height;
+                this.rot = Math.atan2(this.vx, -this.vy)
+                ctx.save();
+                ctx.translate(this.x + this.w / 2, this.y + this.h / 2);
+                ctx.rotate(this.last_rot);
+                ctx.translate(-(this.x + this.w / 2), -(this.y + this.h / 2));
+                ctx.drawImage(tflyImg, this.x, this.y)
+                ctx.restore();
+
+
+
+            }
+
+        }
+
+
+        function Character(x, y, animation_frames) {
+            this.x = x;
+            this.y = y;
+            this.vx = 0;
+            this.vy = 0;
+            this.maxVel = 20;
+            this.ax = 0;
+            this.ay = 0;
+            this.img = new Image();
+            this.rot = 0;
+            this.frame_rate = 1;
+            this.draw = function () {
+                //this.img.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Fesoj_-_Papilio_machaon_%28by%29.jpg/800px-Fesoj_-_Papilio_machaon_%28by%29.jpg';
+                this.frame_rate = 20 / this.speed;
+                if (this.frame_rate > 4) { this.frame_rate = 4; }
+                //this.img.src='butterfly1.png';
+                this.img.src = butterfly_frames[Math.floor(frame / this.frame_rate) % butterfly_frames.length]
+                this.w = this.img.width;
+                this.h = this.img.height;
+                //let a = this.x;
+                //let b = this.y;
+                ctx.save();
+                ctx.translate(this.x + this.w / 2, this.y + this.h / 2);
+                ctx.rotate(this.rot);
+                ctx.translate(-(this.x + this.w / 2), -(this.y + this.h / 2));
+                ctx.drawImage(this.img, this.x, this.y);
+                ctx.restore();
+            }
+            this.move = function () {
+                this.rot = Math.atan2(this.vx, -this.vy)
+                if (Math.abs(this.vx + this.ax) < this.maxVel) {
+                    this.vx += this.ax;
+                }
+                if (Math.abs(this.vy + this.ay) < this.maxVel) {
+                    this.vy += this.ay;
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+                this.speed = Math.sqrt(this.vx ** 2 + this.vy ** 2)
+            }
+        }
+        butterfly = new Character(canvasWidth / 2, canvasHeight / 2, butterfly_frames)
+
+        function screenWrap(thing) {
+            if (thing.x + thing.w < 0) { thing.x = canvasWidth }
+            if (thing.x > canvasWidth) { thing.x = 0 - thing.w }
+            if (thing.y + thing.w < 0) { thing.y = canvasHeight }
+            if (thing.y > canvasHeight) { thing.y = 0 - thing.w }
+        }
+
+        addEventListener('keydown', function (event) {
+            //console.log(event.key);
+            if (event.key == 'ArrowUp') { butterfly.ay = -1 }
+            if (event.key == 'ArrowDown') { butterfly.ay = 1 }
+            if (event.key == 'ArrowLeft') { butterfly.ax = -1 }
+            if (event.key == 'ArrowRight') { butterfly.ax = 1 }
+            if (event.key == ' ') { console.log(tankfly.speed) }
+
+            if (event.key == 'w') { tankfly.acc = 1 }
+            if (event.key == 's') { tankfly.acc = -1 }
+            if (event.key == 'a') { tankfly.d_rot = 0.1 }
+            if (event.key == 'd') { tankfly.d_rot = -0.1 }
+
+        })
+        addEventListener('keyup', function (event) {
+            if (event.key == 'ArrowUp') { butterfly.ay = 0 }
+            if (event.key == 'ArrowDown') { butterfly.ay = 0 }
+            if (event.key == 'ArrowLeft') { butterfly.ax = 0 }
+            if (event.key == 'ArrowRight') { butterfly.ax = 0 }
+
+            if (event.key == 'w') { tankfly.acc = 0 }
+            if (event.key == 's') { tankfly.acc = 0 }
+            if (event.key == 'd') { tankfly.d_rot = 0 }
+            if (event.key == 'a') { tankfly.d_rot = 0 }
+        })
+        function updateCanvas() {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            ctx.fillRect(50, 50, 50, 50);
+            controller()
+            butterfly.move();
+            //tankfly.move();
+            screenWrap(butterfly);
+            //screenWrap(tankfly);
+            butterfly.draw();
+            //tankfly.draw();
+            frame += 1;
+        }
+
+
+    </script>
+</body>
+
+
+</html>
