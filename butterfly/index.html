@@ -33,7 +33,7 @@
 
     <script>
         let frame = 0;
-
+        
         // Canvas setup (was 600x400 originaly)
         const canvasWidth = window.innerWidth * .9;
         const canvasHeight = window.innerHeight * .85;
@@ -186,7 +186,7 @@
             if (event.key == 'a') { tankfly.d_rot = 0.1 }
             if (event.key == 'd') { tankfly.d_rot = -0.1 }
 
-        })
+        });
         addEventListener('keyup', function (event) {
             if (event.key == 'ArrowUp') { butterfly.ay = 0 }
             if (event.key == 'ArrowDown') { butterfly.ay = 0 }
@@ -197,7 +197,12 @@
             if (event.key == 's') { tankfly.acc = 0 }
             if (event.key == 'd') { tankfly.d_rot = 0 }
             if (event.key == 'a') { tankfly.d_rot = 0 }
-        })
+        });
+
+        addEventListener('devicemotion', function (event) {
+            butterfly.ax = event.acceleration.x;
+            butterfly.ay = event.acceleration.y;
+        });
         function updateCanvas() {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             ctx.fillRect(50, 50, 50, 50);
