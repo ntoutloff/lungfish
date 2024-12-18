@@ -28,7 +28,8 @@
 
 
     <canvas id="gameCanvas"></canvas>
-
+    <p id="beta">beta rotation</p>
+    <p id="gamma">gamma rotation</p>
 
 
     <script>
@@ -201,7 +202,9 @@
 
         addEventListener('deviceorientation', function (event) {
             butterfly.ax = event.beta/180;
+            document.getElementById('beta').innerHTML = event.beta;
             butterfly.ay = event.gamma/90;
+            document.getElementById('gamma').innerHTML = event.gamma;
         });
         console.log('deviceorientation set')
         function updateCanvas() {
