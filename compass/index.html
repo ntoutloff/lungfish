@@ -1,32 +1,49 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="../mystyle.css">
-    </head>
 
-    <body>
-        <ul>
-            <li> <a href="../index.html">Home</a></li>
-            <li> <a href="../ball/index.html">Bouncy Ball</a> </li>
-            <li> <a href="../butterfly/index.html">Butterfly Game</a></li>
-            <li> <a class="active" href="index.html">Compass</a></li>
-        </ul>
-        
-        <h1 id="compassDirection">Direction only works on devices with a compass</h1>
-        
-        <img id="compassImage" src="compass.png">
+<head>
+    <link rel="stylesheet" href="../mystyle.css">
+</head>
 
-        <script>
-            function handleOrientation(event) {
-                let rotation = 0;
-                if (event.alpha != null) {
-                    rotation = event.alpha;
-                    document.getElementById('compassDirection').innerHTML = rotation;
-                }
-                let compass = document.getElementById("compassImage").style.transform = "rotate(" + rotation + "deg";
-                console.log(event);
+<body>
+    <ul>
+        <li> <a href="../index.html">Home</a></li>
+        <li> <a href="../ball/index.html">Bouncy Ball</a> </li>
+        <li> <a href="../butterfly/index.html">Butterfly Game</a></li>
+        <li> <a class="active" href="index.html">Compass</a></li>
+    </ul>
+
+    <h1 id="compassDirection">Direction only works on devices with a compass</h1>
+    <button onclick="onClick()">Allow device orientation</button>
+    <img id="compassImage" src="compass.png">
+
+    <script>
+        function onClick() {
+            // feature detect
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation);
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                // handle regular non iOS 13+ devices
+                window.addEventListener('deviceorientation', handleOrientation);
             }
-            addEventListener('deviceorientation', handleOrientation);
-        </script>
-    </body>
+        }
+        function handleOrientation(event) {
+            let rotation = 0;
+            if (event.alpha != null) {
+                rotation = event.alpha;
+                document.getElementById('compassDirection').innerHTML = rotation;
+            }
+            let compass = document.getElementById("compassImage").style.transform = "rotate(" + rotation + "deg";
+            console.log(event);
+        }
+        //addEventListener('deviceorientation', handleOrientation);
+    </script>
+</body>
+
 </html>
