@@ -13,11 +13,17 @@
         </ul>
         
         <h1 id="compassDirection">Direction only works on devices with a compass</h1>
+        
+        <img id="compassImage" src="compass.png">
+
         <script>
             function handleOrientation(event) {
+                let rotation = 0;
                 if (event.alpha != null) {
-                    document.getElementById('compassDirection').innerHTML = event.alpha;
+                    rotation = event.alpha;
+                    document.getElementById('compassDirection').innerHTML = rotation;
                 }
+                let compass = document.getElementById("compassImage").style.transform = "rotate(" + rotation + "deg";
                 console.log(event);
             }
             addEventListener('deviceorientation', handleOrientation);
