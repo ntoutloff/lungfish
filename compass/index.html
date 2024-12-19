@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../mystyle.css">
+    </head>
+
+    <body>
+        <ul>
+            <li> <a href="../index.html">Home</a></li>
+            <li> <a href="../ball/index.html">Bouncy Ball</a> </li>
+            <li> <a href="../butterfly/index.html">Butterfly Game</a></li>
+            <li> <a class="active" href="index.html">Compass</a></li>
+        </ul>
+        
+        <h1 id="compassDirection">Direction only works on devices with a compass</h1>
+        <script>
+            function handleOrientation(event) {
+                if (event.alpha != null) {
+                    document.getElementById('compassDirection').innerHTML = event.alpha;
+                }
+                console.log(event);
+            }
+            addEventListener('deviceorientation', handleOrientation);
+        </script>
+    </body>
+</html>
