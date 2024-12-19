@@ -11,8 +11,8 @@
         button {
             font-family: monospace;
             font-size: x-large;
-            margin-left: 10%;
-            width: 80%;
+            
+            width: 49%;
             height: 50px;
         }
         canvas {
@@ -37,11 +37,12 @@
 
     <canvas id="gameCanvas"></canvas>
     <button onclick="onClick()">Allow device orientation</button>
+    <button onclick="trails()">Toggle trails</button>
 
 
     <script>
         let frame = 0;
-        
+        let hasTrails = false;
         // get permission to use device orientation
         function onClick() {
             // feature detect
@@ -57,6 +58,13 @@
                 // handle regular non iOS 13+ devices
                 window.addEventListener('deviceorientation', handleOrientation);
             }
+        }
+
+        function trails() {
+            
+            if (hasTrails == false) { hasTrails = true }
+            else if (hasTrails == true) { hasTrails = false }
+            console.log(hasTrails);
         }
 
         // Canvas setup (was 600x400 originaly)
@@ -238,8 +246,10 @@
         //});
         console.log('y is +beta, x is +gamma')
         function updateCanvas() {
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-            ctx.fillRect(50, 50, 50, 50);
+            if (hasTrails == false) {
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            }
+                ctx.fillRect(50, 50, 50, 50);
             controller()
             butterfly.move();
             //tankfly.move();
