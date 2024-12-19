@@ -29,13 +29,29 @@
 
 
     <canvas id="gameCanvas"></canvas>
-    <p id="beta">beta rotation</p>
-    <p id="gamma">gamma rotation</p>
+    <button onclick="onClick()">Allow device orientation</button>
 
 
     <script>
         let frame = 0;
         
+        // get permission to use device orientation
+        function onClick() {
+            // feature detect
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation);
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                // handle regular non iOS 13+ devices
+                window.addEventListener('deviceorientation', handleOrientation);
+            }
+        }
+
         // Canvas setup (was 600x400 originaly)
         const canvasWidth = window.innerWidth * .9;
         const canvasHeight = window.innerHeight * .85;
@@ -201,12 +217,18 @@
             if (event.key == 'a') { tankfly.d_rot = 0 }
         });
 
-        addEventListener('deviceorientation', function (event) {
+        function handleOrientation() {
             butterfly.ay = event.beta/10;
-            document.getElementById('beta').innerHTML = event.beta;
             butterfly.ax = event.gamma/10;
-            document.getElementById('gamma').innerHTML = event.gamma;
-        });
+            
+        }
+
+        //addEventListener('deviceorientation', function (event) {
+        //    butterfly.ay = event.beta/10;
+        //    document.getElementById('beta').innerHTML = event.beta;
+        //    butterfly.ax = event.gamma/10;
+        //    document.getElementById('gamma').innerHTML = event.gamma;
+        //});
         console.log('y is +beta, x is +gamma')
         function updateCanvas() {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
