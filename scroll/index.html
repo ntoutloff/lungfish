@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        canvas {
+            border: 3px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        // Game Canvas
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Background
+        const background = new Image();
+        background.src = "cubes.png";
+        let bgx = 0;
+        let bgy = 0;
+
+
+        function setCanvasSize() {
+            canvas.width = window.innerWidth - 30;
+            canvas.height = window.innerHeight - 30;
+        }
+
+        function drawBackground() {
+            for (i = bgx; i < canvas.width; i += background.width) {
+                for (j = bgy; j < canvas.height; j += background.height) {
+                    ctx.drawImage(background, i, j);
+                }
+            }
+        }
+        
+        // Main Loop
+        function gameLoop() {
+            setCanvasSize();
+            
+            bgx -= 1;
+            bgy -= 1;
+            if (bgx > background.width) {bgx = 0;}
+            if (bgy > background.height) {bgy = 0;}
+            drawBackground();
+
+            requestAnimationFrame(gameLoop);
+        }
+        requestAnimationFrame(gameLoop);
+
+
+        // Background
+
+
+
+    </script>
+
+</body>
+
+</html>
