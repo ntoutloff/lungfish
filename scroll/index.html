@@ -20,6 +20,11 @@
         // Background
         const background = new Image();
         background.src = "cubes.png";
+        let bgh = 0;
+        let bgw = 0;
+        // I can't figure out how to get the height and width of an image yet, so setting it manually
+        backgroundWidth = 284;
+        backgroundHeight = 164;        
         let bgx = 0;
         let bgy = 0;
 
@@ -30,13 +35,15 @@
         }
 
         function drawBackground() {
-            for (i = bgx; i < canvas.width; i += background.width) {
-                for (j = bgy; j < canvas.height; j += background.height) {
+            for (let i = bgx; i < canvas.width; i += backgroundWidth) {
+                for (let j = bgy; j < canvas.height; j += backgroundHeight) {
+                    //console.log(i, j);
                     ctx.drawImage(background, i, j);
                 }
             }
         }
-        
+        //setCanvasSize()
+        //drawBackground()
         // Main Loop
         function gameLoop() {
             setCanvasSize();
