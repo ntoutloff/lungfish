@@ -17,6 +17,14 @@
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
+        // Movement variables
+        let x = 0;
+        let y = 0;
+        let vx = 0;
+        let vy = 0;
+        let ax = 0;
+        let ay = 0;
+
         // Background
         const background = new Image();
         background.src = "cubes.png";
@@ -29,27 +37,50 @@
         let bgy = 0;
 
 
+        window.addEventListener('keydown', function(event) {
+            if (event.key == 'ArrowUp') { ay = -1 }
+            if (event.key == 'ArrowDown') { ay = 1 }
+            if (event.key == 'ArrowLeft') { ax = -1 }
+            if (event.key == 'ArrowRight') { ax = 1 }
+        });
+        window.addEventListener('keyup', function(event) {
+            if (event.key == 'ArrowUp') { ay = 0 }
+            if (event.key == 'ArrowDown') { ay = 0 }
+            if (event.key == 'ArrowLeft') { ax = 0 }
+            if (event.key == 'ArrowRight') { ax = 0 }
+        });
+        window.addEventListener('deviceorientation', function(event) {
+            ay = event.beta/10;
+            ax = event.gamma/10;
+        });
         function setCanvasSize() {
             canvas.width = window.innerWidth - 30;
             canvas.height = window.innerHeight - 30;
         }
 
         function drawBackground() {
-            for (let i = bgx; i < canvas.width; i += backgroundWidth) {
-                for (let j = bgy; j < canvas.height; j += backgroundHeight) {
+            for (let i = bgx - backgroundWidth; i < canvas.width + backgroundWidth; i += backgroundWidth) {
+                for (let j = bgy - backgroundHeight; j < canvas.height + backgroundHeight; j += backgroundHeight) {
                     //console.log(i, j);
                     ctx.drawImage(background, i, j);
                 }
             }
         }
-        //setCanvasSize()
-        //drawBackground()
+        
+        function move() {
+            const maxSpeed = 20;
+            if (Math.abs(vx + ax) <= maxSpeed) {vx += ax};
+            if (Math.abs(vy + ay) <= maxSpeed) {vy += ay};
+            x += vx;
+            y += vy;
+        }
+
         // Main Loop
         function gameLoop() {
             setCanvasSize();
-            
-            bgx -= 1;
-            bgy -= 1;
+            move();
+            bgx += vx;
+            bgy += vy;
             if (bgx > background.width) {bgx = 0;}
             if (bgy > background.height) {bgy = 0;}
             drawBackground();
